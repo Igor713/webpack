@@ -8,14 +8,17 @@ const email = document.querySelector('.email') as HTMLInputElement;
 const password = document.querySelector('.password') as HTMLInputElement;
 const password2 = document.querySelector('.password2') as HTMLInputElement;
 
-form.addEventListener('submit', function (e: Event) {
+const submitEventFn = (e: Event) => {
   e.preventDefault();
-  hideErrorMessages(this);
+  const target = e.target as HTMLFormElement
+  hideErrorMessages(target);
   checkForEmptyFields(username, email, password, password2);
   checkEmail(email);
   checkEqualPassawords(password, password2);
-  if (shouldSendForm(this)) console.log('Formulário enviado');
-});
+  if (shouldSendForm(target)) console.log('Formulário enviado');
+};
+
+form.addEventListener('submit', submitEventFn)
 
 function checkForEmptyFields(...inputs: HTMLInputElement[]): void {
   inputs.forEach((input) => {
@@ -29,22 +32,22 @@ function checkEmail(input: HTMLInputElement): void {
   if (!isEmail(input.value)) showErrorMessage(input, 'E-mail inválido');
 }
 
-function checkEqualPassawords(
+const checkEqualPassawords = (
   password: HTMLInputElement,
   password2: HTMLInputElement,
-) {
+) => {
   if (password.value !== password2.value) {
     showErrorMessage(password2, 'As senhas precisam ser iguais');
   }
 }
 
-function hideErrorMessages(form: HTMLFormElement): void {
+const hideErrorMessages = (form: HTMLFormElement): void => {
   form.querySelectorAll('.' + SHOW_ERROR_MESSAGES).forEach((item) => {
     item.classList.remove(SHOW_ERROR_MESSAGES);
   });
 }
 
-function showErrorMessage(input: HTMLInputElement, msg: string): void {
+const showErrorMessage = (input: HTMLInputElement, msg: string): void => {
   const formFields = input.parentElement as HTMLDivElement;
   const errorMessage = formFields.querySelector(
     '.error-message',
@@ -53,7 +56,7 @@ function showErrorMessage(input: HTMLInputElement, msg: string): void {
   formFields.classList.add(SHOW_ERROR_MESSAGES);
 }
 
-function shouldSendForm(form: HTMLFormElement): boolean {
+const shouldSendForm = (form: HTMLFormElement): boolean => {
   let send = true;
   form
     .querySelectorAll('.' + SHOW_ERROR_MESSAGES)
